@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Return of Saturn</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap');
+
+  :root {
+    --parchment: #f5f0e8;
+    --parchment-dark: #ede6d6;
+    --ink: #1a1714;
+    --mustard: #b5621e;
+    --mustard-light: #c97a35;
+    --rule: rgba(181, 98, 30, 0.25);
+    --fade: rgba(26, 23, 20, 0.45);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body {
+    min-height: 100vh;
+    background: var(--parchment);
+    font-family: 'IM Fell English', 'Baskerville', 'Baskerville Old Face', Georgia, serif;
+    color: var(--ink);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* subtle paper grain */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── PASSWORD GATE ── */
+  #gate {
+    position: fixed;
+    inset: 0;
+    background: var(--parchment);
+    z-index: 100;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    animation: fadeIn 1.2s ease forwards;
+  }
+
+  #gate.hidden {
+    animation: fadeOut 0.8s ease forwards;
+    pointer-events: none;
+  }
+
+  .gate-symbol {
+    font-size: 2.4rem;
+    color: var(--mustard);
+    letter-spacing: 0.15em;
+    margin-bottom: 2.5rem;
+    opacity: 0.7;
+  }
+
+  .gate-prompt {
+    font-size: 1.05rem;
+    color: var(--fade);
+    font-style: italic;
+    margin-bottom: 0.6rem;
+    letter-spacing: 0.03em;
+  }
+
+  .gate-sub {
+    font-size: 0.8rem;
+    color: var(--mustard);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 2.2rem;
+    opacity: 0.6;
+  }
+
+  #password-input {
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    border-bottom-color: rgba(181, 98, 30, 0.4);
+    outline: none;
+    font-family: inherit;
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--ink);
+    text-align: center;
+    width: 220px;
+    padding: 0.4rem 0.5rem 0.6rem;
+    letter-spacing: 0.06em;
+    transition: border-color 0.3s;
+  }
+
+  #password-input::placeholder {
+    color: rgba(26,23,20,0.25);
+    font-style: italic;
+  }
+
+  #password-input:focus {
+    border-bottom-color: var(--mustard);
+  }
+
+  #gate-error {
+    margin-top: 1.1rem;
+    font-size: 0.78rem;
+    color: var(--mustard);
+    letter-spacing: 0.08em;
+    opacity: 0;
+    transition: opacity 0.4s;
+    font-style: italic;
+  }
+
+  #gate-error.show { opacity: 1; }
+
+  .gate-enter {
+    margin-top: 1.8rem;
+    background: none;
+    border: 0.5px solid rgba(181,98,30,0.4);
+    color: var(--mustard);
+    font-family: inherit;
+    font-size: 0.75rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.55rem 2rem;
+    cursor: pointer;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  .gate-enter:hover {
+    background: var(--mustard);
+    color: var(--parchment);
+  }
+
+  /* ── MAIN CONTENT ── */
+  #main {
+    opacity: 0;
+    position: relative;
+    z-index: 1;
+  }
+
+  #main.visible {
+    animation: fadeIn 1.4s ease 0.2s forwards;
+  }
+
+  /* top ornament bar */
+  .top-rule {
+    width: 100%;
+    padding: 2.4rem 0 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .top-rule::before,
+  .top-rule::after {
+    content: '';
+    flex: 1;
+    max-width: 160px;
+    height: 0.5px;
+    background: var(--mustard);
+    opacity: 0.35;
+  }
+
+  .saturn-glyph {
+    font-size: 1.1rem;
+    color: var(--mustard);
+    opacity: 0.6;
+    letter-spacing: 0.2em;
+  }
+
+  /* page container */
+  .page {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 0 2rem 6rem;
+  }
+
+  /* header */
+  .show-header {
+    text-align: center;
+    padding: 3.5rem 0 2.8rem;
+    border-bottom: 0.5px solid var(--rule);
+    margin-bottom: 3.5rem;
+  }
+
+  .show-title {
+    font-size: clamp(2rem, 6vw, 3.2rem);
+    font-weight: 400;
+    color: var(--ink);
+    letter-spacing: 0.06em;
+    line-height: 1.15;
+    margin-bottom: 0.7rem;
+  }
+
+  .show-title em {
+    color: var(--mustard);
+    font-style: italic;
+  }
+
+  .show-date {
+    font-size: 0.82rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--mustard);
+    opacity: 0.75;
+    margin-top: 0.8rem;
+  }
+
+  .show-venue {
+    font-size: 0.78rem;
+    letter-spacing: 0.12em;
+    color: var(--fade);
+    margin-top: 0.35rem;
+    font-style: italic;
+  }
+
+  /* letter */
+  .letter-wrapper {
+    position: relative;
+  }
+
+  .salutation {
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 2rem;
+  }
+
+  .salutation span {
+    color: var(--mustard);
+    border-bottom: 0.5px solid var(--mustard);
+    padding-bottom: 1px;
+  }
+
+  .letter-body p {
+    font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+    line-height: 1.85;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .letter-body p.bold-call {
+    font-weight: 700;
+    font-size: clamp(1rem, 2.6vw, 1.12rem);
+    line-height: 1.75;
+    color: var(--ink);
+  }
+
+  /* details block */
+  .details-block {
+    border-top: 0.5px solid var(--rule);
+    border-bottom: 0.5px solid var(--rule);
+    padding: 2rem 0;
+    margin: 2.5rem 0;
+  }
+
+  .detail-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.3rem 0;
+    margin-bottom: 1.1rem;
+    font-size: clamp(0.88rem, 2.2vw, 0.97rem);
+    line-height: 1.75;
+  }
+
+  .detail-row:last-child { margin-bottom: 0; }
+
+  .detail-label {
+    font-style: italic;
+    font-weight: 700;
+    color: var(--mustard);
+    margin-right: 0.4rem;
+    white-space: nowrap;
+  }
+
+  .detail-value {
+    color: var(--ink);
+  }
+
+  /* sign-off */
+  .signoff {
+    margin-top: 2.8rem;
+  }
+
+  .signoff-text {
+    font-style: italic;
+    font-size: 1rem;
+    color: var(--fade);
+    margin-bottom: 0.6rem;
+  }
+
+  .signature {
+    font-size: 1.8rem;
+    color: var(--ink);
+    letter-spacing: 0.04em;
+    font-style: italic;
+    margin-top: 0.3rem;
+    opacity: 0.75;
+  }
+
+  /* pinterest widget */
+  .board-section {
+    margin-top: 4rem;
+    border-top: 0.5px solid var(--rule);
+    padding-top: 3rem;
+    text-align: center;
+  }
+
+  .board-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mustard);
+    opacity: 0.65;
+    margin-bottom: 1.1rem;
+  }
+
+  .board-heading {
+    font-size: 1.25rem;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 0.5rem;
+  }
+
+  .board-sub {
+    font-size: 0.85rem;
+    color: var(--fade);
+    font-style: italic;
+    margin-bottom: 2rem;
+    line-height: 1.6;
+  }
+
+  .board-link-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    text-decoration: none;
+    border: 0.5px solid rgba(181,98,30,0.45);
+    color: var(--mustard);
+    font-family: inherit;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 0.7rem 2.2rem;
+    transition: background 0.25s, color 0.25s;
+  }
+
+  .board-link-btn:hover {
+    background: var(--mustard);
+    color: var(--parchment);
+  }
+
+  .board-link-btn svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+
+  /* board preview thumbnail strip */
+  .board-preview {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 1.8rem;
+    overflow: hidden;
+  }
+
+  .board-thumb {
+    width: 72px;
+    height: 90px;
+    background: var(--parchment-dark);
+    border: 0.5px solid var(--rule);
+    flex-shrink: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .board-thumb::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 60%, rgba(181,98,30,0.08));
+  }
+
+  /* bottom ornament */
+  .bottom-ornament {
+    text-align: center;
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 0.5px solid var(--rule);
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    color: var(--mustard);
+    opacity: 0.4;
+    text-transform: uppercase;
+  }
+
+  /* animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; transform: translateY(-8px); }
+  }
+
+  /* mobile */
+  @media (max-width: 600px) {
+    .page { padding: 0 1.25rem 4rem; }
+    .show-header { padding: 2.5rem 0 2rem; margin-bottom: 2.5rem; }
+    .board-thumb { width: 56px; height: 70px; }
+    .board-preview { gap: 4px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-symbol">♄</div>
+  <p class="gate-prompt">you've been invited</p>
+  <p class="gate-sub">enter your name to open</p>
+  <input type="text" id="password-input" placeholder="your name" autocomplete="off" spellcheck="false" />
+  <p id="gate-error">this invitation isn't addressed to that name</p>
+  <button class="gate-enter" onclick="checkPassword()">Enter</button>
+</div>
+
+<!-- MAIN CONTENT -->
+<div id="main">
+
+  <div class="top-rule">
+    <span class="saturn-glyph">♄</span>
+  </div>
+
+  <div class="page">
+
+    <!-- header -->
+    <header class="show-header">
+      <h1 class="show-title"><em>The Return</em> of Saturn</h1>
+      <p class="show-date">June 27, 2026 &nbsp;·&nbsp; 4–8 pm</p>
+      <p class="show-venue">Amato Studio &nbsp;·&nbsp; Arlington Heights, Los Angeles</p>
+    </header>
+
+    <!-- letter -->
+    <div class="letter-wrapper">
+      <p class="salutation">Dear <span id="recipient-name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>,</p>
+
+      <div class="letter-body">
+        <p>My Saturn has returned, and with it a desire to be surrounded by art and community.</p>
+
+        <p>For my 30th, I've decided to throw an art show. The theme revolves around Saturn Return, the astrological rite of passage when Saturn completes its first orbit back to where it was at your birth —roughly ages 27–30. It's associated with confronting mortality, identity, and authenticity; the stripping away of borrowed personas; and the collapse of structures built unconsciously.</p>
+
+        <p>I don't want to do this show alone. My hope is to have my friends' artwork fill the walls, each owning their own narrative and interpretation of this cosmic inner confrontation.</p>
+
+        <p class="bold-call">I want to formally ask your involvement in this project. I'd love to see your work on the walls of the gallery. Whether it's artwork you've already worked on or a new idea, I'm open to anything.</p>
+
+        <!-- details -->
+        <div class="details-block">
+          <div class="detail-row">
+            <span class="detail-label">The date &amp; tentative time:</span>
+            <span class="detail-value">June 27, 2026 — 4–8pm</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">The venue:</span>
+            <span class="detail-value">Amato Studio, in the Arlington Heights community of LA. It's a 1920s bank that has been converted into an event space and production studio, with 20-foot-high ceilings, so you're welcome to go big.</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Tentative title:</span>
+            <span class="detail-value">The Return of Saturn</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">My project's tone:</span>
+            <span class="detail-value">Romantic era with digital twists. Shadows of the psyche coming to light. A realization that "joy and woe are woven fine." Natural Fibers. My own battles with creativity and being an artist. The inner turmoil of identity and grief through an abstract lens.</span>
+          </div>
+        </div>
+
+        <p>I will be working with cyanotypes, batik and an art installation. This is still in development, but this is where I'm at as I'm writing this letter. I'm trying not to overthink it or be held back by limiting beliefs. I just want to make work that says what my words can't. I want to put myself out there, stay present, and trust the process of making.</p>
+
+        <p>If you are interested, please reach out as soon as possible! I'm here if you want to brainstorm and need any more direction.</p>
+
+        <p>Regardless, consider this an invitation to the show—I'd love to see your face.</p>
+      </div>
+
+      <div class="signoff">
+        <p class="signoff-text">with love,</p>
+        <p class="signature">Andru</p>
+      </div>
+    </div>
+
+    <!-- pinterest board section -->
+    <div class="board-section">
+      <p class="board-label">Visual Reference</p>
+      <h2 class="board-heading">Saturn Returns — Mood Board</h2>
+      <p class="board-sub">A living collection of references, tone, and visual language<br>for the show. Updated as the work evolves.</p>
+
+      <div class="board-preview" id="board-preview">
+        <!-- color swatches as stand-in preview tiles -->
+        <div class="board-thumb" style="background:#5C0F0F;"></div>
+        <div class="board-thumb" style="background:#1a1a1a;"></div>
+        <div class="board-thumb" style="background:#6B4C2A;"></div>
+        <div class="board-thumb" style="background:#3B6B5A;"></div>
+        <div class="board-thumb" style="background:#1a0f25;"></div>
+        <div class="board-thumb" style="background:#8B3010;"></div>
+        <div class="board-thumb" style="background:#2a2530;"></div>
+      </div>
+
+      <a class="board-link-btn" href="https://www.pinterest.com/andruperez22/saturn-returns/" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 0C5.373 0 0 5.373 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.632-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12S18.627 0 12 0z"/></svg>
+        View the board on Pinterest
+      </a>
+    </div>
+
+    <p class="bottom-ornament">♄ &nbsp; The Return of Saturn &nbsp; ♄</p>
+
+  </div>
+</div>
+
+<script>
+  // Add names here — all lowercase, they match case-insensitively
+  const passwords = [
+    "andru","alex","sofia","maya","elena","jake","sara","mia",
+    "luna","zoe","leo","nadia","claire","jesse","river","sam",
+    "taylor","morgan","drew","reese","avery","quinn","blake",
+    "skyler","eden","ash","rowan","sage","phoenix","indie",
+    // add more friends' names here
+  ];
+
+  const input = document.getElementById('password-input');
+  const error = document.getElementById('gate-error');
+  const gate  = document.getElementById('gate');
+  const main  = document.getElementById('main');
+  const recipientEl = document.getElementById('recipient-name');
+
+  function checkPassword() {
+    const val = input.value.trim().toLowerCase();
+    if (passwords.includes(val)) {
+      // personalise salutation
+      const display = input.value.trim();
+      const pretty = display.charAt(0).toUpperCase() + display.slice(1).toLowerCase();
+      recipientEl.textContent = pretty;
+      // transition
+      gate.classList.add('hidden');
+      setTimeout(() => {
+        gate.style.display = 'none';
+        main.classList.add('visible');
+      }, 850);
+    } else {
+      error.classList.add('show');
+      input.style.borderBottomColor = 'var(--mustard)';
+      setTimeout(() => error.classList.remove('show'), 3000);
+    }
+  }
+
+  input.addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkPassword();
+    error.classList.remove('show');
+  });
+
+  // auto-focus
+  window.addEventListener('load', () => input.focus());
+</script>
+</body>
+</html>
