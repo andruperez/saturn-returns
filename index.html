@@ -605,6 +605,137 @@
     letter-spacing: 0.03em;
   }
 
+  /* ── SHOWTIME LETTER SECTION ── */
+  .showtime-section {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 2.2rem 2rem 3rem;
+  }
+
+  .showtime-section .salutation {
+    font-size: 1.15rem;
+    font-style: italic;
+    color: var(--ink);
+    margin-bottom: 2rem;
+  }
+
+  .showtime-section .salutation span {
+    color: var(--mustard);
+    border-bottom: 0.5px solid var(--mustard);
+    padding-bottom: 1px;
+  }
+
+  .showtime-section .letter-body p {
+    font-size: clamp(0.95rem, 2.4vw, 1.05rem);
+    line-height: 1.88;
+    color: var(--ink);
+    margin-bottom: 1.5rem;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .action-block {
+    border-top: 0.5px solid var(--rule);
+    border-bottom: 0.5px solid var(--rule);
+    padding: 1.6rem 0;
+    margin: 2rem 0;
+  }
+
+  .action-label {
+    font-size: 0.72rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--mustard);
+    margin-bottom: 0.5rem;
+    font-style: normal;
+  }
+
+  .action-block p {
+    font-size: clamp(0.88rem, 2.2vw, 0.97rem);
+    line-height: 1.75;
+    color: var(--ink);
+    margin-bottom: 0.6rem;
+  }
+
+  .action-block p:last-child { margin-bottom: 0; }
+
+  .showtime-details {
+    margin: 0 0 0.5rem;
+  }
+
+  .showtime-detail-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    margin-bottom: 1.6rem;
+    font-size: clamp(0.88rem, 2.2vw, 0.97rem);
+    line-height: 1.75;
+  }
+
+  .showtime-detail-row:last-child { margin-bottom: 0; }
+
+  .showtime-detail-label {
+    color: var(--mustard);
+    font-style: normal;
+    font-size: 0.85em;
+    letter-spacing: 0.02em;
+  }
+
+  .showtime-detail-value {
+    color: var(--ink);
+  }
+
+  .showtime-detail-value p {
+    font-size: clamp(0.88rem, 2.2vw, 0.97rem);
+    line-height: 1.75;
+    margin-bottom: 0.6rem;
+    text-align: justify;
+    hyphens: auto;
+  }
+
+  .showtime-detail-value p:last-child { margin-bottom: 0; }
+
+  .showtime-detail-value .pickup-sub {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-top: 0.4rem;
+  }
+
+  .showtime-detail-value .pickup-day {
+    font-size: 0.82em;
+    color: var(--fade);
+    font-style: normal;
+    line-height: 1.7;
+  }
+
+  /* Section divider between new and old letter */
+  .section-divider {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 3rem 2rem 0;
+    display: flex;
+    align-items: center;
+    gap: 1.4rem;
+  }
+
+  .section-divider-line {
+    flex: 1;
+    height: 0.5px;
+    background: var(--mustard);
+    opacity: 0.25;
+  }
+
+  .section-divider-label {
+    font-size: 0.68rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--mustard);
+    opacity: 0.65;
+    white-space: nowrap;
+    font-style: normal;
+  }
+
   /* bottom ornament */
   .bottom-ornament {
     text-align: center;
@@ -654,13 +785,112 @@
 <!-- MAIN CONTENT -->
 <div id="main">
 
-   <div class="letter-top-ornament">
+  <!-- SHOWTIME LETTER -->
+  <div class="letter-top-ornament">
     <span class="dot-rule"></span>
     <div class="letter-planet-glyph">
       <img src="saturn.svg">
     </div>
     <span class="dot-rule"></span>
   </div>
+
+  <div class="showtime-section">
+
+    <p class="salutation">Hello <span id="recipient-name-showtime">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>,</p>
+
+    <div class="letter-body">
+      <p>It&rsquo;s almost showtime, and I&rsquo;m so excited to see you all very soon! I wanted to share a few details and reminders before Saturday.</p>
+    </div>
+
+    <!-- ACTION NEEDED -->
+    <div class="action-block">
+      <p class="action-label">Action Needed &mdash; Artwork Label Form</p>
+      <p>I&rsquo;ll be making labels for everyone&rsquo;s work. Please fill out the form below by Wednesday, June 24 so I have the correct information for your piece.</p>
+      <p><a href="#" style="color:var(--mustard);font-style:italic;text-underline-offset:3px;">Label Form &rarr;</a></p>
+    </div>
+
+    <!-- DETAILS -->
+    <div class="showtime-details">
+
+      <div class="showtime-detail-row">
+        <span class="showtime-detail-label">Show Hours</span>
+        <div class="showtime-detail-value">
+          <p>The exhibition will be open to the public from 4&ndash;8&nbsp;PM. Please feel free to invite anyone you&rsquo;d like to come celebrate your work with you!</p>
+        </div>
+      </div>
+
+      <div class="showtime-detail-row">
+        <span class="showtime-detail-label">Installation Window</span>
+        <div class="showtime-detail-value">
+          <p>Installation will take place from 12&ndash;3:45&nbsp;PM.</p>
+        </div>
+      </div>
+
+      <div class="showtime-detail-row">
+        <span class="showtime-detail-label">Who Is Installing the Show</span>
+        <div class="showtime-detail-value">
+          <p>Grace Saunders, Timothy Leblanc, and I will be placing and installing the work on Saturday. As the exhibition designers, we&rsquo;ll make sure everything is thoughtfully placed and presented with care.</p>
+        </div>
+      </div>
+
+      <div class="showtime-detail-row">
+        <span class="showtime-detail-label">If You Are Dropping Off Your Work at the Venue</span>
+        <div class="showtime-detail-value">
+          <p>Please drop off your work at 12:15&nbsp;PM. I don&rsquo;t get the keys until 12, so please do not arrive before then.</p>
+          <p>After you drop off your pieces, feel free to go enjoy your afternoon and come back around 4&nbsp;PM to enjoy the show!</p>
+        </div>
+      </div>
+
+      <div class="showtime-detail-row">
+        <span class="showtime-detail-label">If You Need Your Work Picked Up</span>
+        <div class="showtime-detail-value">
+          <p>Please coordinate with me on a good time, and I&rsquo;d be happy to collect your work.</p>
+          <div class="pickup-sub">
+            <span class="pickup-day"><strong>Thursday, June 25 &mdash; Riverside / Nearby Artists</strong><br>I&rsquo;ll be available to pick up work from Riverside or nearby artists. You can also drop your work off at my family home.</span>
+            <span class="pickup-day" style="margin-top:0.5rem;"><strong>Friday, June 26 &mdash; Los Angeles / Pasadena Artists</strong><br>I&rsquo;ll be available to pick up work from Los Angeles or Pasadena artists. You can also drop your work off at my apartment in Pasadena.</span>
+          </div>
+          <p style="margin-top:0.8rem;">Please make sure your work is protected for transport.</p>
+        </div>
+      </div>
+
+      <div class="showtime-detail-row">
+        <span class="showtime-detail-label">Last-Minute Riverside Drop-Off Option</span>
+        <div class="showtime-detail-value">
+          <p>For the Riverside or nearby crew, Grace and Tom have offered to bring work that is dropped off with them by Friday night, so you don&rsquo;t have to come in early on Saturday.</p>
+        </div>
+      </div>
+
+      <div class="showtime-detail-row">
+        <span class="showtime-detail-label">Install Instructions</span>
+        <div class="showtime-detail-value">
+          <p>If you have any specific install instructions, please send them to me beforehand so we can make sure your work is shown the way you&rsquo;d like.</p>
+          <p>And if you feel you need to install your work yourself because of any particular details or requirements, just let us know &mdash; but please don&rsquo;t feel obligated to do so.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="letter-body" style="margin-top:2rem;">
+      <p>So excited to see everything come together!</p>
+    </div>
+
+    <div class="signoff">
+      <p class="signoff-text">with love,</p>
+      <div class="sig-img">
+        <img src="signature.svg">
+      </div>
+      <p class="sig-name">Andru Perez</p>
+    </div>
+
+  </div>
+
+  <!-- SECTION DIVIDER -->
+  <div class="section-divider">
+    <span class="section-divider-line"></span>
+    <span class="section-divider-label">An Invitation to Create</span>
+    <span class="section-divider-line"></span>
+  </div>
+
   <div class="page">
 
     <div class="letter-wrapper">
@@ -801,8 +1031,8 @@
 <script>
   const passwords = [
     "andru","yessenia","senia","milana","jesse","the love of my life","krissy","grace","timothy",
-    "ian","tim","viv","tiffani","danielle","rose","linette","paulina", "jonathan", "john",
-    "kayla","alyssa","beto","humberto","vivianna","randy","brigitta","nathan","manny","manuel"
+    "tim","viv","tiffani","danielle","rose","linette","paulina", "jonathan", "john",
+    "kayla","alyssa","vivianna","brigitta","nathan","manny","manuel"
   ];
 
   const input = document.getElementById('password-input');
@@ -817,6 +1047,7 @@
       const display = input.value.trim();
       const pretty = display.charAt(0).toUpperCase() + display.slice(1).toLowerCase();
       recipientEl.textContent = pretty;
+      document.getElementById('recipient-name-showtime').textContent = pretty;
       gate.classList.add('hidden');
       setTimeout(() => {
         gate.style.display = 'none';
